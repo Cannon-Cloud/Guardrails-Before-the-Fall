@@ -5,6 +5,7 @@ Experiment A: Jailbreak Robustness Under Cost-Constrained Attack
 Estimates effective robustness versus query budget and attack composition.
 
 Author: Clarence H. Cannon, IV
+University of Colorado Boulder
 """
 
 import argparse

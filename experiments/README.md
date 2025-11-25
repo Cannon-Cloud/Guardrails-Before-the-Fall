@@ -2,7 +2,8 @@
 
 **Guardrails Before the Fall: Anticipatory Governance for AI, Quantum, and Neuromorphic Systems**
 
-Author: Clarence H. Cannon, IV
+Author: Clarence H. Cannon, IV  
+University of Colorado Boulder
 
 ---
 
@@ -244,6 +245,7 @@ If you use these experimental protocols, please cite:
 @article{cannon2025guardrails,
   title={Guardrails Before the Fall: Anticipatory Governance for AI, Quantum, and Neuromorphic Systems},
   author={Cannon, Clarence H., IV},
+  institution={University of Colorado Boulder},
   journal={arXiv preprint arXiv:XXXX.XXXXX},
   year={2025}
 }
@@ -253,11 +255,12 @@ If you use these experimental protocols, please cite:
 
 If you remix, transform, or build upon this material, you must distribute your contributions under the same license.
 
-For commercial licensing, contact: clarence@simplysubscribe.com
+For commercial licensing, contact: Clarence.Cannon@colorado.edu
 
 ---
 
 ## Contact
 
 Clarence H. Cannon, IV  
-clarence@simplysubscribe.com
+Clarence.Cannon@colorado.edu  
+University of Colorado Boulder

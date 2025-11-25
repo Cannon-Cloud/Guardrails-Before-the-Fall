@@ -1,5 +1,6 @@
 # Makefile for Guardrails Before the Fall
 # Author: Clarence H. Cannon, IV
+# University of Colorado Boulder
 
 .PHONY: all pdf clean experiments help
 

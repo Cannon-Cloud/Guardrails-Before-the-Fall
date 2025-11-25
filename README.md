@@ -8,9 +8,9 @@
 ## Author
 
 **Clarence H. Cannon, IV**  
-Chief Technology Officer, Simply Subscribe  
-San Francisco, CA  
-📧 clarence@simplysubscribe.com
+University of Colorado Boulder  
+Boulder, CO  
+📧 Clarence.Cannon@colorado.edu
 
 ## Abstract
 
@@ -52,7 +52,7 @@ Requires TeX Live, MiKTeX, or MacTeX installed.
 
 ```bash
 # Clone repository
-git clone https://github.com/[your-username]/guardrails-before-the-fall.git
+git clone https://github.com/ClarenceCannon/guardrails-before-the-fall.git
 cd guardrails-before-the-fall
 
 # Build PDF
@@ -106,6 +106,7 @@ python experiments/exp_a_jailbreak/run.py
 @article{cannon2025guardrails,
   title={Guardrails Before the Fall: Anticipatory Governance for AI, Quantum, and Neuromorphic Systems},
   author={Cannon, Clarence H., IV},
+  institution={University of Colorado Boulder},
   journal={arXiv preprint arXiv:XXXX.XXXXX},
   year={2025}
 }
@@ -133,7 +134,7 @@ This work is licensed under a [Creative Commons Attribution-NonCommercial-ShareA
 - **NonCommercial** — You may not use the material for commercial purposes
 - **ShareAlike** — If you remix or build upon the material, you must distribute under the same license
 
-For commercial licensing inquiries, contact: clarence@simplysubscribe.com
+For commercial licensing inquiries, contact: Clarence.Cannon@colorado.edu
 
 ## Acknowledgments
 
@@ -141,4 +142,4 @@ For commercial licensing inquiries, contact: clarence@simplysubscribe.com
 
 ---
 
-**Simply Subscribe** | [simplysubscribe.com](https://simplysubscribe.com)
+**University of Colorado Boulder**

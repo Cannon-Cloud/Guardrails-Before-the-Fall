@@ -1,6 +1,7 @@
 """
 Shared utilities for Guardrails Before the Fall experiments.
 Author: Clarence H. Cannon, IV
+University of Colorado Boulder
 """
 
 import os

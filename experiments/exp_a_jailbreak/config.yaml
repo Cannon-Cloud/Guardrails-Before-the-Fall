@@ -1,5 +1,6 @@
 # Experiment A: Jailbreak Robustness Under Cost-Constrained Attack
 # Author: Clarence H. Cannon, IV
+# University of Colorado Boulder
 
 experiment:
   name: 'jailbreak_robustness'

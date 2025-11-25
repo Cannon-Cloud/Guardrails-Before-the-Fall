@@ -469,9 +469,13 @@ def run_experiment(
     models: List[str] = ["gpt-4o", "claude-3-5-sonnet-20241022"],
     baseline_weeks: int = 1,
     monitoring_cycles: int = 10,
-    output_dir: str = "./results"
+    output_dir: str = None
 ):
     """Run the full drift detection experiment."""
+    
+    # Default output dir relative to this script
+    if output_dir is None:
+        output_dir = str(Path(__file__).parent / "results")
     
     set_seed(42)
     logger.info("Starting drift detection experiment")
@@ -504,7 +508,7 @@ if __name__ == "__main__":
                         help="Comma-separated model names")
     parser.add_argument("--baseline-weeks", type=int, default=1)
     parser.add_argument("--monitoring-cycles", type=int, default=10)
-    parser.add_argument("--output", default="./results")
+    parser.add_argument("--output", default=None, help="Output directory (default: results in script dir)")
     args = parser.parse_args()
     
     models = args.models.split(",")

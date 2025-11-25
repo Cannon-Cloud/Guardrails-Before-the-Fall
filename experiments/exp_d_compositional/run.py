@@ -407,11 +407,16 @@ class CompositionalEvaluator:
 def run_experiment(
     models: List[str] = ["gpt-4o", "claude-3-5-sonnet-20241022"],
     scenarios: List[Dict] = ESCALATION_SCENARIOS,
-    output_dir: str = "./results"
+    output_dir: str = None
 ):
     """Run the full compositional evaluation experiment."""
     
     set_seed(42)
+    
+    # Default output dir relative to this script
+    if output_dir is None:
+        output_dir = str(Path(__file__).parent / "results")
+    
     logger.info(f"Running compositional eval on {len(models)} models, {len(scenarios)} scenarios")
     
     results: List[ScenarioResult] = []
@@ -553,7 +558,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Experiment D: Compositional Evaluation")
     parser.add_argument("--models", default="gpt-4o,claude-3-5-sonnet-20241022",
                         help="Comma-separated model names")
-    parser.add_argument("--output", default="./results")
+    parser.add_argument("--output", default=None, help="Output directory (default: results in script dir)")
     args = parser.parse_args()
     
     models = args.models.split(",")

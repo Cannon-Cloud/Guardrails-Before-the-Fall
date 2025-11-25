@@ -338,12 +338,16 @@ class EfficiencyBenchmark:
 def run_experiment(
     models: List[str] = None,
     batch_sizes: List[int] = [1, 8, 32],
-    output_dir: str = "./results",
+    output_dir: str = None,
     measure_gpu: bool = False
 ):
     """Run the full efficiency analysis experiment."""
     
     set_seed(42)
+    
+    # Default output dir relative to this script
+    if output_dir is None:
+        output_dir = str(Path(__file__).parent / "results")
     
     if models is None:
         models = list(ENERGY_ESTIMATES.keys())
@@ -491,7 +495,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Experiment C: Efficiency Analysis")
     parser.add_argument("--models", help="Comma-separated model names")
     parser.add_argument("--batch-sizes", default="1,8,32", help="Batch sizes to test")
-    parser.add_argument("--output", default="./results")
+    parser.add_argument("--output", default=None, help="Output directory (default: results in script dir)")
     parser.add_argument("--measure-gpu", action="store_true", 
                         help="Actually measure GPU (requires CUDA)")
     args = parser.parse_args()

@@ -249,6 +249,10 @@ If you use these experimental protocols, please cite:
 }
 ```
 
+**License**: CC BY-NC 4.0 (Non-Commercial Use)
+
+For commercial licensing, contact: clarence@simplysubscribe.com
+
 ---
 
 ## Contact

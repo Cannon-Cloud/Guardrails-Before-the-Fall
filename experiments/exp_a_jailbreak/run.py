@@ -459,79 +459,114 @@ def run_experiment(config_path: str = None, dry_run: bool = False):
                         continue
     
     # Save results
-    results_tracker.save_csv("attack_results.csv")
-    results_tracker.save_json("attack_results.json")
+    logger.info(f"Saving {len(all_results)} results...")
+    csv_path = results_tracker.save_csv("attack_results.csv")
+    json_path = results_tracker.save_json("attack_results.json")
     
     # Generate analysis
     if all_results:
+        logger.info("Generating analysis and figures...")
         analyze_results(all_results, config['output']['results_dir'])
     else:
         logger.warning("No results to analyze!")
     
-    logger.info("Experiment complete!")
+    # Print summary
+    print("\n" + "="*60)
+    print("EXPERIMENT COMPLETE")
+    print("="*60)
+    print(f"Total results: {len(all_results)}")
+    print(f"Results saved to:")
+    print(f"  - {csv_path}")
+    print(f"  - {json_path}")
+    print(f"  - {config['output']['results_dir']}/figures/")
+    print("="*60 + "\n")
+    
     return all_results
 
 
 def analyze_results(results: List[AttackResult], output_dir: str):
     """Analyze and visualize experiment results."""
     
+    logger.info(f"Analyzing {len(results)} results...")
+    
     df = pd.DataFrame([r.__dict__ for r in results])
     output_path = Path(output_dir)
     figures_path = output_path / "figures"
     figures_path.mkdir(parents=True, exist_ok=True)
     
+    logger.info(f"Saving figures to {figures_path}")
+    
     # 1. Attack Success Rate by Model and Attack Type
-    fig, ax = plt.subplots(figsize=(10, 6))
-    success_rates = df.groupby(['model', 'attack_type'])['is_success'].mean().unstack()
-    success_rates.plot(kind='bar', ax=ax)
-    ax.set_ylabel('Attack Success Rate')
-    ax.set_title('Jailbreak Success Rate by Model and Attack Type')
-    ax.legend(title='Attack Type')
-    plt.xticks(rotation=45, ha='right')
-    plt.tight_layout()
-    save_figure(fig, figures_path / "success_rate_by_model.png")
-    plt.close()
-    
-    # 2. Success Rate vs Query Budget
-    fig, ax = plt.subplots(figsize=(10, 6))
-    for attack_type in df['attack_type'].unique():
-        subset = df[df['attack_type'] == attack_type]
-        cumulative_success = subset.groupby('query_number')['is_success'].mean()
-        ax.plot(cumulative_success.index, cumulative_success.values, 
-                marker='o', label=attack_type)
-    ax.set_xlabel('Query Number')
-    ax.set_ylabel('Cumulative Success Rate')
-    ax.set_title('Attack Success vs. Query Budget')
-    ax.legend()
-    plt.tight_layout()
-    save_figure(fig, figures_path / "success_vs_queries.png")
-    plt.close()
-    
-    # 3. Tokens per Successful Attack
-    successful = df[df['is_success']]
-    if len(successful) > 0:
+    try:
         fig, ax = plt.subplots(figsize=(10, 6))
-        tokens_per_success = successful.groupby(['model', 'attack_type'])['tokens_used'].mean()
-        tokens_per_success.unstack().plot(kind='bar', ax=ax)
-        ax.set_ylabel('Average Tokens per Successful Attack')
-        ax.set_title('Cost Efficiency of Attacks')
+        success_rates = df.groupby(['model', 'attack_type'])['is_success'].mean().unstack()
+        success_rates.plot(kind='bar', ax=ax)
+        ax.set_ylabel('Attack Success Rate')
+        ax.set_title('Jailbreak Success Rate by Model and Attack Type')
+        ax.legend(title='Attack Type')
         plt.xticks(rotation=45, ha='right')
         plt.tight_layout()
-        save_figure(fig, figures_path / "tokens_per_success.png")
+        save_figure(fig, figures_path / "success_rate_by_model.png")
         plt.close()
+        logger.info("  ✓ success_rate_by_model.png")
+    except Exception as e:
+        logger.error(f"  ✗ success_rate_by_model.png failed: {e}")
+    
+    # 2. Success Rate vs Query Budget
+    try:
+        fig, ax = plt.subplots(figsize=(10, 6))
+        for attack_type in df['attack_type'].unique():
+            subset = df[df['attack_type'] == attack_type]
+            cumulative_success = subset.groupby('query_number')['is_success'].mean()
+            ax.plot(cumulative_success.index, cumulative_success.values, 
+                    marker='o', label=attack_type)
+        ax.set_xlabel('Query Number')
+        ax.set_ylabel('Cumulative Success Rate')
+        ax.set_title('Attack Success vs. Query Budget')
+        ax.legend()
+        plt.tight_layout()
+        save_figure(fig, figures_path / "success_vs_queries.png")
+        plt.close()
+        logger.info("  ✓ success_vs_queries.png")
+    except Exception as e:
+        logger.error(f"  ✗ success_vs_queries.png failed: {e}")
+    
+    # 3. Tokens per Successful Attack
+    try:
+        successful = df[df['is_success']]
+        if len(successful) > 0:
+            fig, ax = plt.subplots(figsize=(10, 6))
+            tokens_per_success = successful.groupby(['model', 'attack_type'])['tokens_used'].mean()
+            tokens_per_success.unstack().plot(kind='bar', ax=ax)
+            ax.set_ylabel('Average Tokens per Successful Attack')
+            ax.set_title('Cost Efficiency of Attacks')
+            plt.xticks(rotation=45, ha='right')
+            plt.tight_layout()
+            save_figure(fig, figures_path / "tokens_per_success.png")
+            plt.close()
+            logger.info("  ✓ tokens_per_success.png")
+        else:
+            logger.info("  - tokens_per_success.png skipped (no successful attacks)")
+    except Exception as e:
+        logger.error(f"  ✗ tokens_per_success.png failed: {e}")
     
     # 4. Success Rate by Domain
-    fig, ax = plt.subplots(figsize=(10, 6))
-    domain_success = df.groupby('domain')['is_success'].mean().sort_values(ascending=False)
-    domain_success.plot(kind='bar', ax=ax, color='coral')
-    ax.set_ylabel('Attack Success Rate')
-    ax.set_title('Vulnerability by Risk Domain')
-    plt.xticks(rotation=45, ha='right')
-    plt.tight_layout()
-    save_figure(fig, figures_path / "success_by_domain.png")
-    plt.close()
+    try:
+        fig, ax = plt.subplots(figsize=(10, 6))
+        domain_success = df.groupby('domain')['is_success'].mean().sort_values(ascending=False)
+        domain_success.plot(kind='bar', ax=ax, color='coral')
+        ax.set_ylabel('Attack Success Rate')
+        ax.set_title('Vulnerability by Risk Domain')
+        plt.xticks(rotation=45, ha='right')
+        plt.tight_layout()
+        save_figure(fig, figures_path / "success_by_domain.png")
+        plt.close()
+        logger.info("  ✓ success_by_domain.png")
+    except Exception as e:
+        logger.error(f"  ✗ success_by_domain.png failed: {e}")
     
     # Generate summary statistics
+    successful = df[df['is_success']]
     summary = {
         'overall_success_rate': float(df['is_success'].mean()),
         'success_by_model': df.groupby('model')['is_success'].mean().to_dict(),
@@ -543,10 +578,22 @@ def analyze_results(results: List[AttackResult], output_dir: str):
         'successful_attacks': int(df['is_success'].sum())
     }
     
-    with open(output_path / "summary_statistics.json", 'w') as f:
+    summary_path = output_path / "summary_statistics.json"
+    with open(summary_path, 'w') as f:
         json.dump(summary, f, indent=2)
     
-    logger.info(f"Analysis complete. Results saved to {output_path}")
+    logger.info(f"  ✓ summary_statistics.json")
+    logger.info(f"Analysis complete. Files saved to {output_path}")
+    
+    # Print summary to console
+    print("\n" + "-"*40)
+    print("SUMMARY STATISTICS")
+    print("-"*40)
+    print(f"Total attacks: {summary['total_attacks']}")
+    print(f"Successful attacks: {summary['successful_attacks']}")
+    print(f"Overall success rate: {summary['overall_success_rate']:.2%}")
+    print("-"*40 + "\n")
+    
     return summary
 
 

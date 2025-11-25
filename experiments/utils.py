@@ -167,28 +167,30 @@ class ResultsTracker:
         self.results_dir.mkdir(parents=True, exist_ok=True)
         self.results: List[Dict] = []
         self.logger = setup_logging(f"Results:{experiment_name}")
+        self.logger.info(f"Results will be saved to: {self.results_dir.absolute()}")
     
     def add(self, result: Dict):
         """Add a result to the tracker."""
         result['_timestamp'] = datetime.now().isoformat()
         result['_experiment'] = self.experiment_name
         self.results.append(result)
+        self.logger.debug(f"Added result #{len(self.results)}")
     
-    def save_csv(self, filename: Optional[str] = None):
+    def save_csv(self, filename: Optional[str] = None) -> Path:
         """Save results to CSV."""
         filename = filename or f"{self.experiment_name}_results.csv"
-        df = pd.DataFrame(self.results)
         path = self.results_dir / filename
+        df = pd.DataFrame(self.results)
         df.to_csv(path, index=False)
         self.logger.info(f"Saved {len(self.results)} results to {path}")
         return path
     
-    def save_json(self, filename: Optional[str] = None):
+    def save_json(self, filename: Optional[str] = None) -> Path:
         """Save results to JSON."""
         filename = filename or f"{self.experiment_name}_results.json"
         path = self.results_dir / filename
         with open(path, 'w') as f:
-            json.dump(self.results, f, indent=2)
+            json.dump(self.results, f, indent=2, default=str)
         self.logger.info(f"Saved {len(self.results)} results to {path}")
         return path
     

@@ -249,7 +249,9 @@ If you use these experimental protocols, please cite:
 }
 ```
 
-**License**: CC BY-NC 4.0 (Non-Commercial Use)
+**License**: CC BY-NC-SA 4.0 (Attribution-NonCommercial-ShareAlike)
+
+If you remix, transform, or build upon this material, you must distribute your contributions under the same license.
 
 For commercial licensing, contact: clarence@simplysubscribe.com
 

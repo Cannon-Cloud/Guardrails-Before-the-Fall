@@ -1,0 +1,56 @@
+# Docker Compose for Experiment D Sandbox Environment
+# Author: Clarence H. Cannon, IV
+
+version: "3.8"
+
+services:
+  # Sandboxed execution environment
+  sandbox:
+    build:
+      context: .
+      dockerfile: Dockerfile.sandbox
+    container_name: exp_d_sandbox
+    networks:
+      - isolated
+    volumes:
+      - ./sandbox_data:/app/data:ro
+    environment:
+      - SANDBOX_MODE=true
+      - MAX_EXECUTION_TIME=30
+      - NETWORK_DISABLED=true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp:size=100M
+    mem_limit: 512m
+    cpus: 1.0
+
+  # Simulated target for testing
+  target-web:
+    image: nginx:alpine
+    container_name: exp_d_target
+    networks:
+      - isolated
+    volumes:
+      - ./mock_website:/usr/share/nginx/html:ro
+
+  # Monitoring/logging
+  monitor:
+    image: python:3.11-slim
+    container_name: exp_d_monitor
+    networks:
+      - isolated
+    volumes:
+      - ./logs:/app/logs
+      - ./monitor.py:/app/monitor.py:ro
+    command: python /app/monitor.py
+    depends_on:
+      - sandbox
+
+networks:
+  isolated:
+    driver: bridge
+    internal: true # No external network access
